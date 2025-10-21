@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: todolist
+  name: todolist-deployment
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: todolist
+  template:
+    metadata:
+      labels:
+        app: todolist
+      namespace: todolist
+    spec:
+      containers:
+        - image: viettu123/todolist
+          imagePullPolicy: Always
+          name: todolist
+          ports:
+            - containerPort: 80
+              name: tcp
+              protocol: TCP
+      imagePullSecrets:
+      - name: dockerhub-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todolist-service
+  namespace: default
+spec:
+  selector:
+    app: todolist
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30080 
+  type: NodePort
+
